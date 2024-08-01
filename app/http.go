@@ -8,30 +8,30 @@ import (
 	"github.com/themethaithian/nethttp/logger"
 )
 
-type contextHttp struct {
+type contextHTTP struct {
 	w          http.ResponseWriter
 	r          *http.Request
 	logHandler slog.Handler
 }
 
 func NewContextHttp(w http.ResponseWriter, r *http.Request, logHandler slog.Handler) Context {
-	return &contextHttp{
+	return &contextHTTP{
 		w:          w,
 		r:          r,
 		logHandler: logHandler,
 	}
 }
 
-func (c *contextHttp) Bind(v any) error {
+func (c *contextHTTP) Bind(v any) error {
 	defer c.r.Body.Close()
 	return json.NewDecoder(c.r.Body).Decode(v)
 }
 
-func (c *contextHttp) Param(key string) string {
+func (c *contextHTTP) Param(key string) string {
 	return c.r.PathValue(key)
 }
 
-func (c *contextHttp) OK(v any) {
+func (c *contextHTTP) OK(v any) {
 	c.w.WriteHeader(http.StatusOK)
 	if v == nil {
 		return
@@ -44,7 +44,7 @@ func (c *contextHttp) OK(v any) {
 	_ = err
 }
 
-func (c *contextHttp) BadRequest(err error) {
+func (c *contextHTTP) BadRequest(err error) {
 	logger.AppErrorf(c.logHandler, "%s", err)
 	c.w.WriteHeader(http.StatusBadRequest)
 	jsonErr := json.NewEncoder(c.w).Encode(Response{
@@ -54,7 +54,7 @@ func (c *contextHttp) BadRequest(err error) {
 	_ = jsonErr
 }
 
-func (c *contextHttp) StoreError(err error) {
+func (c *contextHTTP) StoreError(err error) {
 	logger.AppErrorf(c.logHandler, "%s", err)
 	c.w.WriteHeader(storeErrorStutas)
 	jsonErr := json.NewEncoder(c.w).Encode(Response{
@@ -100,7 +100,7 @@ func NewHTTPHandler(method string, handler func(Context), interceptors []middlew
 			w.WriteHeader(http.StatusMethodNotAllowed)
 			return
 		}
-		handler(&contextHttp{w: w, r: r, logHandler: logger.Handler().WithAttrs([]slog.Attr{slog.String("transaction-id", r.Header.Get("transaction-id"))})})
+		handler(&contextHTTP{w: w, r: r, logHandler: logger.Handler().WithAttrs([]slog.Attr{slog.String("transaction-id", r.Header.Get("transaction-id"))})})
 	})
 
 	for _, interceptor := range interceptors {
