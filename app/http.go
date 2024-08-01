@@ -4,8 +4,6 @@ import (
 	"encoding/json"
 	"log/slog"
 	"net/http"
-
-	"github.com/themethaithian/nethttp/logger"
 )
 
 type contextHTTP struct {
@@ -14,11 +12,10 @@ type contextHTTP struct {
 	logHandler slog.Handler
 }
 
-func NewContextHttp(w http.ResponseWriter, r *http.Request, logHandler slog.Handler) Context {
+func NewContextHttp(w http.ResponseWriter, r *http.Request) Context {
 	return &contextHTTP{
-		w:          w,
-		r:          r,
-		logHandler: logHandler,
+		w: w,
+		r: r,
 	}
 }
 
@@ -45,7 +42,6 @@ func (c *contextHTTP) OK(v any) {
 }
 
 func (c *contextHTTP) BadRequest(err error) {
-	logger.AppErrorf(c.logHandler, "%s", err)
 	c.w.WriteHeader(http.StatusBadRequest)
 	jsonErr := json.NewEncoder(c.w).Encode(Response{
 		Status:  Fail,
@@ -55,7 +51,6 @@ func (c *contextHTTP) BadRequest(err error) {
 }
 
 func (c *contextHTTP) StoreError(err error) {
-	logger.AppErrorf(c.logHandler, "%s", err)
 	c.w.WriteHeader(storeErrorStutas)
 	jsonErr := json.NewEncoder(c.w).Encode(Response{
 		Status:  Fail,
@@ -70,10 +65,10 @@ type RouterHTTP struct {
 	interceptors []middlewareFunc
 }
 
-func NewRouterHTTP(logger *slog.Logger) *RouterHTTP {
+func NewRouterHTTP() *RouterHTTP {
 	r := http.NewServeMux()
 
-	return &RouterHTTP{mux: r, logger: logger}
+	return &RouterHTTP{mux: r}
 }
 
 type middlewareFunc func(h http.Handler) http.Handler
