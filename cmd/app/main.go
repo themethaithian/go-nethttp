@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/themethaithian/nethttp/app"
+	"github.com/themethaithian/nethttp/app/user"
 	"github.com/themethaithian/nethttp/config"
 	"github.com/themethaithian/nethttp/logger"
 )
@@ -17,6 +18,10 @@ import (
 func main() {
 	logger := logger.New()
 	r := app.NewRouterHTTP(logger)
+
+	userHandler := user.NewHandler()
+
+	r.POST("/create_user", userHandler.CreateUser)
 
 	server := http.Server{
 		Addr:              ":" + config.Val.Port,
