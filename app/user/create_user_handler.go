@@ -1,6 +1,6 @@
 package user
 
-import "github.com/themethaithian/nethttp/app"
+import "github.com/themethaithian/go-nethttp/app"
 
 type CreateUser struct {
 	Username   string  `json:"username"`

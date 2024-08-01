@@ -1,6 +1,6 @@
 package user
 
-import "github.com/themethaithian/nethttp/app"
+import "github.com/themethaithian/go-nethttp/app"
 
 type Handler interface {
 	CreateUser(ctx app.Context)

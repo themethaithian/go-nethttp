@@ -9,9 +9,9 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/themethaithian/nethttp/app"
-	"github.com/themethaithian/nethttp/app/user"
-	"github.com/themethaithian/nethttp/config"
+	"github.com/themethaithian/go-nethttp/app"
+	"github.com/themethaithian/go-nethttp/app/user"
+	"github.com/themethaithian/go-nethttp/config"
 )
 
 func main() {

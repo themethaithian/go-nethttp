@@ -1,4 +1,4 @@
-module github.com/themethaithian/nethttp
+module github.com/themethaithian/go-nethttp
 
 go 1.22.3
 
